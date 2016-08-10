@@ -139,7 +139,7 @@ public class ExpirableCache<K,V> implements Serializable {
     MINUTE {
 
       /** 
-       * @see ExpirableCacheUnit#defaultTimeToLiveMillis(int)
+       * @see org.owasp.csrfguard.config.overlay.ExpirableCache.ExpirableCacheUnit#defaultTimeToLiveMillis(int)
        */
       @Override
       public long defaultTimeToLiveMillis(int input) {
@@ -151,7 +151,7 @@ public class ExpirableCache<K,V> implements Serializable {
     SECOND {
 
       /** 
-       * @see ExpirableCacheUnit#defaultTimeToLiveMillis(int)
+       * @see org.owasp.csrfguard.config.overlay.ExpirableCache.ExpirableCacheUnit#defaultTimeToLiveMillis(int)
        */
       @Override
       public long defaultTimeToLiveMillis(int input) {

@@ -49,7 +49,6 @@ import org.owasp.csrfguard.action.IAction;
 import org.owasp.csrfguard.config.ConfigurationProvider;
 import org.owasp.csrfguard.config.ConfigurationProviderFactory;
 import org.owasp.csrfguard.config.NullConfigurationProvider;
-import org.owasp.csrfguard.config.PropertiesConfigurationProvider;
 import org.owasp.csrfguard.config.PropertiesConfigurationProviderFactory;
 import org.owasp.csrfguard.config.overlay.ExpirableCache;
 import org.owasp.csrfguard.log.ILogger;
@@ -346,7 +345,7 @@ public final class CsrfGuard {
 	 * @param request The HttpServletRequest
 	 * @param response The HttpServletResponse
 	 * @param csrfe The exception that triggered the actions call. Passed to the action.
-	 * @see IAction#execute(HttpServletRequest, HttpServletResponse, CsrfGuardException)
+	 * @see IAction#execute(HttpServletRequest, HttpServletResponse, CsrfGuardException, CsrfGuard)
 	 */
 	private void callActionsOnError(HttpServletRequest request,
 			HttpServletResponse response, CsrfGuardException csrfe) {
