@@ -2567,7 +2567,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
           .getClass());
     }
     // make an array of the type of object passed in, size one
-    Object array = Array.newInstance(objectOrArrayOrCollection.getClass(),
+    Object array = Array.newInstance(null != objectOrArrayOrCollection ? objectOrArrayOrCollection.getClass() : Object.class.getClass(),
         1);
     Array.set(array, 0, objectOrArrayOrCollection);
     return array;
@@ -3057,7 +3057,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
 
       // no search strings found, we are done
       if (done || inputIndex == -1) {
-        if (writeToWriter) {
+        if (null != outWriter) {
           outWriter.write(text, 0, text.length());
           return null;
         }
@@ -3083,7 +3083,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
 
         searchString = (String) get(searchFor, replaceIndex);
         replaceString = (String) get(replaceWith, replaceIndex);
-        if (writeToWriter) {
+        if (null != outWriter) {
           outWriter.write(text, start, inputIndex - start);
           outWriter.write(replaceString);
         } else {
@@ -3108,7 +3108,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
         inputIndex = unpackInt(resultPacked, true);
         replaceIndex = unpackInt(resultPacked, false);
       }
-      if (writeToWriter) {
+      if (null != outWriter) {
         outWriter.write(text, start, text.length() - start);
 
       } else {
@@ -3123,7 +3123,10 @@ public class ConfigPropertiesCascadeCommonUtils  {
         }
         return null;
       }
-      String resultString = bufferToWriteTo.toString();
+      String resultString = null;
+      if (null != bufferToWriteTo) {
+    	  resultString = bufferToWriteTo.toString();	
+      }
 
       if (recurse) {
         return replaceHelper(outBuffer, outWriter, resultString,
@@ -3329,7 +3332,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param object object to convert to human-readable string.
    * @return the toStringSafe string
    */
-  @SuppressWarnings("unchecked")
   public static String toStringSafe(Object object) {
     if (object == null) {
       return null;
@@ -3511,7 +3513,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param includeAnnotation true if the attribute should be included if annotation is present, false if exclude
    * @return the set of field names or empty set if none
    */
-  @SuppressWarnings("unchecked")
   public static Set<Method> getters(Class theClass, Class superclassToStopAt,
       Class<? extends Annotation> markerAnnotation, Boolean includeAnnotation) {
     return gettersHelper(theClass, superclassToStopAt, null, true, 
