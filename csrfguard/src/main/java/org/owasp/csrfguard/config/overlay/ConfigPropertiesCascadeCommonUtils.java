@@ -3594,8 +3594,9 @@ public class ConfigPropertiesCascadeCommonUtils  {
           continue;
         }
         //if checking for annotation
-        if (markerAnnotation != null
-            && (includeAnnotation != method.isAnnotationPresent(markerAnnotation))) {
+        // DEVNOTE jmason|gettersHelper|nullsafe unbox|Aug 11, 2016 - if includeAnnotation is null, when unboxing will result in NPE
+        if (null != markerAnnotation && null != includeAnnotation
+            && (includeAnnotation.booleanValue() != method.isAnnotationPresent(markerAnnotation))) {
           continue;
         }
         //if checking for type, and not right type, continue
@@ -3845,8 +3846,9 @@ public class ConfigPropertiesCascadeCommonUtils  {
           continue;
         }
         //if checking for annotation
-        if (markerAnnotation != null
-            && (includeAnnotation != method.isAnnotationPresent(markerAnnotation))) {
+        // DEVNOTE jmason|gettersHelper|nullsafe unbox|Aug 11, 2016 - if includeAnnotation is null, when unboxing will result in NPE
+        if (null != markerAnnotation && null != includeAnnotation
+            && (includeAnnotation.booleanValue() != method.isAnnotationPresent(markerAnnotation))) {
           continue;
         }
         //if checking for type, and not right type, continue
