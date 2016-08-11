@@ -40,7 +40,11 @@ import java.io.Serializable;
  */
 public class ExpirableValue<T> implements Serializable {
 
-  /** this is the time it was placed in the cache */
+	/**
+	 */
+	private static final long serialVersionUID = -1964036842690600196L;
+
+/** this is the time it was placed in the cache */
   private long timePlacedInCache = System.currentTimeMillis();
   
   /** the time to live is by default 1 day */
