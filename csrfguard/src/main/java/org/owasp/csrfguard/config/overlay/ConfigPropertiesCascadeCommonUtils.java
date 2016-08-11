@@ -3385,9 +3385,10 @@ public class ConfigPropertiesCascadeCommonUtils  {
               + object + "'");
     }
     // its not blank, just convert
-    if (object instanceof Boolean) {
-      return (Boolean) object;
-    }
+	if (object instanceof Boolean) {
+		Boolean bool = (Boolean)object;
+		return bool.booleanValue();
+	}
     if (object instanceof String) {
       String string = (String) object;
       if (equalsIgnoreCase(string, "true")
@@ -3437,7 +3438,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
     if (nullOrBlank(object)) {
       return null;
     }
-    return booleanValue(object);
+    return Boolean.valueOf(booleanValue(object));
   }
 
   /**
@@ -3811,7 +3812,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
     
     setterSet = new LinkedHashSet<Method>();
     settersHelper(theClass, superclassToStopAt, fieldType, includeSuperclassToStopAt, 
-        markerAnnotation, setterSet, includeAnnotation);
+        markerAnnotation, setterSet, Boolean.valueOf(includeAnnotation));
   
     //add to cache
     setterSetCache().put(cacheKey, setterSet);
@@ -4645,7 +4646,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
     if (input == null || "".equals(input)) {
       return valueIfNull;
     }
-    return intObjectValue(input, false);
+    return intObjectValue(input, false).intValue();
   }
 
   /**
@@ -4727,7 +4728,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
     if (input == null || "".equals(input)) {
       return valueIfNull;
     }
-    return longObjectValue(input, false);
+    return longObjectValue(input, false).longValue();
   }
 
   /**
@@ -8451,7 +8452,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
       }
       return null;
     }
-    return intValue(argString);
+    return intObjectValue(argString, false);
   }
 
   /**

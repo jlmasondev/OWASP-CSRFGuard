@@ -379,7 +379,7 @@ public abstract class ConfigPropertiesCascadeBase {
 
 			overrideMap = propertiesOverrideMap();
 
-			hasKey = overrideMap == null ? null : overrideMap.containsKey(key);
+			hasKey = overrideMap == null ? false : overrideMap.containsKey(key);
 			value = hasKey ? overrideMap.get(key) : null;
 		}
 		if (!hasKey) {
@@ -460,7 +460,7 @@ public abstract class ConfigPropertiesCascadeBase {
 
 	/**
 	 * when we build the config object, get the time to check config in seconds
-	 * @return the time to check config foe changes (in seconds)
+	 * @return Integer - the time to check config for changes (in seconds)
 	 */
 	protected Integer getTimeToCheckConfigSeconds() {
 		return this.timeToCheckConfigSeconds;
@@ -740,7 +740,7 @@ public abstract class ConfigPropertiesCascadeBase {
 		ConfigPropertiesCascadeBase result = ConfigPropertiesCascadeUtils.newInstance(this.getClass(), true);
 
 		try {
-			result.timeToCheckConfigSeconds = ConfigPropertiesCascadeUtils.intValue(secondsToCheckConfigString);
+			result.timeToCheckConfigSeconds = ConfigPropertiesCascadeUtils.intObjectValue(secondsToCheckConfigString, false);
 		} catch (Exception e) {
 			throw new RuntimeException("Invalid integer seconds to check config config value: " + secondsToCheckConfigString
 					+ ", key: " + this.getSecondsToCheckConfigKey() 
@@ -864,7 +864,7 @@ public abstract class ConfigPropertiesCascadeBase {
 				if (configObject.needToCheckIfFilesNeedReloading()) {
 
 					if (true) {
-						debugMap.put("needToCheckIfFilesNeedReloading", true);
+						debugMap.put("needToCheckIfFilesNeedReloading", Boolean.TRUE);
 					}
 					synchronized (configObject) {
 
@@ -874,11 +874,11 @@ public abstract class ConfigPropertiesCascadeBase {
 						if (configObject.needToCheckIfFilesNeedReloading()) {
 
 							if (true) {
-								debugMap.put("needToCheckIfFilesNeedReloading2", true);
+								debugMap.put("needToCheckIfFilesNeedReloading2", Boolean.TRUE);
 							}
 							if (configObject.filesNeedReloadingBasedOnContents()) {
 								if (true) {
-									debugMap.put("filesNeedReloadingBasedOnContents", true);
+									debugMap.put("filesNeedReloadingBasedOnContents", Boolean.TRUE);
 								}
 								configObject = retrieveFromConfigFiles();
 								configFileCache.put(this.getClass(), configObject);
@@ -889,7 +889,7 @@ public abstract class ConfigPropertiesCascadeBase {
 			}
 			if (true) {
 				debugMap.put("configObjectPropertyCount", configObject == null ? null 
-						: (configObject.properties() == null ? "propertiesNull" : configObject.properties().size()));
+						: (configObject.properties() == null ? "propertiesNull" : Integer.valueOf( configObject.properties().size() )));
 			}
 
 			return configObject;
@@ -911,7 +911,11 @@ public abstract class ConfigPropertiesCascadeBase {
 		long lastCheckedTimeLocal = this.getLastCheckedTime();
 
 		//get the timeToCheckSeconds if different
-		int timeToCheckSeconds = this.getTimeToCheckConfigSeconds();
+		int timeToCheckSeconds = 0;
+		if (null != this.getTimeToCheckConfigSeconds()) {
+			timeToCheckSeconds = this.getTimeToCheckConfigSeconds().intValue();
+		}
+		
 
 		//never reload.  0 means reload all the time?
 		if (timeToCheckSeconds < 0) {
@@ -969,24 +973,32 @@ public abstract class ConfigPropertiesCascadeBase {
 	protected abstract String getMainExampleConfigClasspath();
 
 	/**
+	 * if the key is there, whether or not the value is blank
+	 * @param key property key
+	 * @return true or false
+	 */
+	public boolean containsKey(String key) {
+		return propertyValueString(key, null, false).isHasKey();
+
+	}
+	
+	/**
+	 * get a boolean and validate from csrf guard properties
+	 * @param key property key
+	 * @return the boolean property value 
+	 */
+	public boolean propertyValueBooleanRequired(String key) {
+		return propertyValueBoolean(key, Boolean.FALSE, true).booleanValue();
+	}
+	
+	/**
 	 * get a boolean and validate from csrf guard properties
 	 * @param key property key
 	 * @param defaultValue valud to use when key is missing
 	 * @return true when the property value represents an affirmative string such as {true, t, yes, y}
 	 */
 	public boolean propertyValueBoolean(String key, boolean defaultValue) {
-		return propertyValueBoolean(key, defaultValue, false);
-	}
-
-	/**
-	 * if the key is there, whether or not the value is blank
-	 * @param key property key
-	 * @return true or false
-	 */
-	public boolean containsKey(String key) {
-
-		return propertyValueString(key, null, false).isHasKey();
-
+		return propertyValueBoolean(key, defaultValue, false).booleanValue();
 	}
 
 	/**
@@ -998,11 +1010,21 @@ public abstract class ConfigPropertiesCascadeBase {
 		return propertyValueBoolean(key, null, false);
 	}
 
-
 	/**
 	 * get a boolean pop and validate from the config file
 	 * @param key property key
-	 * @param defaultValue Used when no property value is found for the given key, when the 'required' option is not set
+	 * @param defaultValue (boolean prim) Used when no property value is found for the given key, when the 'required' option is not set
+	 * @param required Whether or not a value is required to be present
+	 * @return true when property value is string is one of {true, t, yes, y} and false when one of {false, f, no, n}
+	 */
+	protected Boolean propertyValueBoolean(String key, boolean defaultValue, boolean required) {
+		return propertyValueBoolean(key, Boolean.valueOf(defaultValue), required);
+	}
+	
+	/**
+	 * get a boolean pop and validate from the config file
+	 * @param key property key
+	 * @param defaultValue (Boolean Obj) Used when no property value is found for the given key, when the 'required' option is not set
 	 * @param required Whether or not a value is required to be present
 	 * @return true when property value is string is one of {true, t, yes, y} and false when one of {false, f, no, n}
 	 */
@@ -1014,29 +1036,19 @@ public abstract class ConfigPropertiesCascadeBase {
 		if (ConfigPropertiesCascadeUtils.isBlank(value) && required) {
 			throw new RuntimeException("Cant find boolean property " + key + " in properties file: " + this.getMainConfigClasspath() + ", it is required, expecting true or false");
 		}
-		if ("true".equalsIgnoreCase(value)) {
-			return true;
+		
+		if( "true".equalsIgnoreCase(value)
+			|| "t".equalsIgnoreCase(value)
+			|| "yes".equalsIgnoreCase(value)
+			|| "y".equalsIgnoreCase(value) ) {
+			return Boolean.TRUE;
 		}
-		if ("false".equalsIgnoreCase(value)) {
-			return false;
-		}
-		if ("t".equalsIgnoreCase(value)) {
-			return true;
-		}
-		if ("f".equalsIgnoreCase(value)) {
-			return false;
-		}
-		if ("yes".equalsIgnoreCase(value)) {
-			return true;
-		}
-		if ("no".equalsIgnoreCase(value)) {
-			return false;
-		}
-		if ("y".equalsIgnoreCase(value)) {
-			return true;
-		}
-		if ("n".equalsIgnoreCase(value)) {
-			return false;
+		
+		if( "false".equalsIgnoreCase(value)
+			|| "f".equalsIgnoreCase(value)
+			|| "no".equalsIgnoreCase(value)
+			|| "n".equalsIgnoreCase(value) ) {
+			return Boolean.FALSE;
 		}
 		throw new RuntimeException("Invalid boolean value: '" + value + "' for property: " + key 
 				+ " in properties file: " + this.getMainConfigClasspath() + ", expecting true or false");
@@ -1046,7 +1058,18 @@ public abstract class ConfigPropertiesCascadeBase {
 	/**
 	 * get an int and validate from the config file
 	 * @param key property key
-	 * @param defaultValue Used when no property value is found for the given key, when the 'required' option is not set
+	 * @param defaultValue (int) Used when no property value is found for the given key, when the 'required' option is not set
+	 * @param required Whether or not a value is required to be present
+	 * @return the property value
+	 */
+	protected Integer propertyValueInt(String key, int defaultValue, boolean required) {
+		return propertyValueInt(key, Integer.valueOf(defaultValue), required);
+	}
+	
+	/**
+	 * get an int and validate from the config file
+	 * @param key property key
+	 * @param defaultValue (Integer) Used when no property value is found for the given key, when the 'required' option is not set
 	 * @param required Whether or not a value is required to be present
 	 * @return the property value
 	 */
@@ -1059,7 +1082,7 @@ public abstract class ConfigPropertiesCascadeBase {
 			throw new RuntimeException("Cant find integer property " + key + " in config file: " + this.getMainConfigClasspath() + ", it is required");
 		}
 		try {
-			return ConfigPropertiesCascadeUtils.intValue(value);
+			return ConfigPropertiesCascadeUtils.intObjectValue(value, false);
 		} catch (Exception e) {
 
 		}
@@ -1071,22 +1094,10 @@ public abstract class ConfigPropertiesCascadeBase {
 	/**
 	 * get a boolean and validate from csrf guard properties
 	 * @param key property key
-	 * @return the boolean property value 
-	 */
-	public boolean propertyValueBooleanRequired(String key) {
-
-		return propertyValueBoolean(key, false, true);
-
-	}
-
-	/**
-	 * get a boolean and validate from csrf guard properties
-	 * @param key property key
 	 * @return the integer property value 
 	 */
 	public int propertyValueIntRequired(String key) {
-
-		return propertyValueInt(key, -1, true);
+		return propertyValueInt(key, -1, true).intValue();
 
 	}
 
@@ -1097,8 +1108,7 @@ public abstract class ConfigPropertiesCascadeBase {
 	 * @return the property value
 	 */
 	public int propertyValueInt(String key, int defaultValue ) {
-
-		return propertyValueInt(key, defaultValue, false);
+		return propertyValueInt(key, defaultValue, false).intValue();
 
 	}
 
@@ -1108,7 +1118,6 @@ public abstract class ConfigPropertiesCascadeBase {
 	 * @return the int or null if there
 	 */
 	public Integer propertyValueInt(String key ) {
-
 		return propertyValueInt(key, null, false);
 
 	}

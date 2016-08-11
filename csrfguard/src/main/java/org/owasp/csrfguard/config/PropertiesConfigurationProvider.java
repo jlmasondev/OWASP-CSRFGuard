@@ -113,28 +113,28 @@ public class PropertiesConfigurationProvider implements ConfigurationProvider {
 			logger = (ILogger) Class.forName(propertyString(properties, "org.owasp.csrfguard.Logger", "org.owasp.csrfguard.log.ConsoleLogger")).newInstance();
 			tokenName = propertyString(properties, "org.owasp.csrfguard.TokenName", "OWASP_CSRFGUARD");
 			tokenLength = Integer.parseInt(propertyString(properties, "org.owasp.csrfguard.TokenLength", "32"));
-			rotate = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.Rotate", "false"));
-			tokenPerPage = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.TokenPerPage", "false"));
+			rotate = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.Rotate", "false"));
+			tokenPerPage = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.TokenPerPage", "false"));
 
-			this.validationWhenNoSessionExists = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.ValidateWhenNoSessionExists", "true"));
+			this.validationWhenNoSessionExists = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.ValidateWhenNoSessionExists", "true"));
 			this.domainOrigin = propertyString(properties, "org.owasp.csrfguard.domainOrigin", null);
-			tokenPerPagePrecreate = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.TokenPerPagePrecreate", "false"));
+			tokenPerPagePrecreate = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.TokenPerPagePrecreate", "false"));
 			prng = SecureRandom.getInstance(propertyString(properties, "org.owasp.csrfguard.PRNG", "SHA1PRNG"), propertyString(properties, "org.owasp.csrfguard.PRNG.Provider", "SUN"));
 			newTokenLandingPage = propertyString(properties, "org.owasp.csrfguard.NewTokenLandingPage");
 	
-			printConfig = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.Config.Print", "false"));
+			printConfig = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.Config.Print", "false"));
 
-			this.enabled = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.Enabled", "true"));
+			this.enabled = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.Enabled", "true"));
 			
 			//default to false if newTokenLandingPage is not set; default to true if set.
 			if (newTokenLandingPage == null) {
-				useNewTokenLandingPage = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.UseNewTokenLandingPage", "false"));
+				useNewTokenLandingPage = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.UseNewTokenLandingPage", "false"));
 			} else {
-				useNewTokenLandingPage = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.UseNewTokenLandingPage", "true"));
+				useNewTokenLandingPage = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.UseNewTokenLandingPage", "true"));
 			}
 			sessionKey = propertyString(properties, "org.owasp.csrfguard.SessionKey", "OWASP_CSRFGUARD_KEY");
-			ajax = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.Ajax", "false"));
-			protect = Boolean.valueOf(propertyString(properties, "org.owasp.csrfguard.Protect", "false"));
+			ajax = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.Ajax", "false"));
+			protect = Boolean.parseBoolean(propertyString(properties, "org.owasp.csrfguard.Protect", "false"));
 	
 			/** first pass: instantiate actions **/
 			Map<String, IAction> actionsMap = new HashMap<String, IAction>();
@@ -246,24 +246,24 @@ public class PropertiesConfigurationProvider implements ConfigurationProvider {
 				
 				this.javascriptCacheControl = CsrfGuardUtils.getInitParameter(servletConfig, "cache-control",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.cacheControl"), "private, maxage=28800");
-				this.javascriptDomainStrict = Boolean.valueOf(CsrfGuardUtils.getInitParameter(servletConfig, "domain-strict",  
+				this.javascriptDomainStrict = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "domain-strict",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.domainStrict"), "true"));
-				this.javascriptInjectIntoAttributes = Boolean.valueOf(CsrfGuardUtils.getInitParameter(servletConfig, "inject-into-attributes",  
+				this.javascriptInjectIntoAttributes = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "inject-into-attributes",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.injectIntoAttributes"), "true"));
 
-				this.javascriptInjectGetForms = Boolean.valueOf(CsrfGuardUtils.getInitParameter(servletConfig, "inject-get-forms",  
+				this.javascriptInjectGetForms = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "inject-get-forms",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.injectGetForms"), "true"));
 
-				this.javascriptInjectFormAttributes = Boolean.valueOf(CsrfGuardUtils.getInitParameter(servletConfig, "inject-form-attributes",  
+				this.javascriptInjectFormAttributes = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "inject-form-attributes",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.injectFormAttributes"), "true"));
 
-				this.javascriptInjectIntoForms = Boolean.valueOf(CsrfGuardUtils.getInitParameter(servletConfig, "inject-into-forms",  
+				this.javascriptInjectIntoForms = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "inject-into-forms",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.injectIntoForms"), "true"));
 				
 				this.javascriptRefererPattern = Pattern.compile(CsrfGuardUtils.getInitParameter(servletConfig, "referer-pattern",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.refererPattern"), ".*"));
 
-				this.javascriptRefererMatchDomain = Boolean.valueOf(CsrfGuardUtils.getInitParameter(servletConfig, "referer-match-domain",  
+				this.javascriptRefererMatchDomain = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "referer-match-domain",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.refererMatchDomain"), "true"));
 
 

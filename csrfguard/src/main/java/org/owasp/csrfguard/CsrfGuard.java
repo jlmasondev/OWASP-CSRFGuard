@@ -500,25 +500,25 @@ public final class CsrfGuard {
 		sb.append(String.format("* NewTokenLandingPage: %s\r\n", getNewTokenLandingPage()));
 		sb.append(String.format("* PRNG: %s\r\n", getPrng().getAlgorithm()));
 		sb.append(String.format("* SessionKey: %s\r\n", getSessionKey()));
-		sb.append(String.format("* TokenLength: %s\r\n", getTokenLength()));
+		sb.append(String.format("* TokenLength: %s\r\n", Integer.valueOf( getTokenLength() )));
 		sb.append(String.format("* TokenName: %s\r\n", getTokenName()));
-		sb.append(String.format("* Ajax: %s\r\n", isAjaxEnabled()));
-		sb.append(String.format("* Rotate: %s\r\n", isRotateEnabled()));
+		sb.append(String.format("* Ajax: %s\r\n", Boolean.valueOf( isAjaxEnabled() )));
+		sb.append(String.format("* Rotate: %s\r\n", Boolean.valueOf( isRotateEnabled() )));
 		sb.append(String.format("* Javascript cache control: %s\r\n", getJavascriptCacheControl()));
-		sb.append(String.format("* Javascript domain strict: %s\r\n", isJavascriptDomainStrict()));
-		sb.append(String.format("* Javascript inject attributes: %s\r\n", isJavascriptInjectIntoAttributes()));
-		sb.append(String.format("* Javascript inject forms: %s\r\n", isJavascriptInjectIntoForms()));
+		sb.append(String.format("* Javascript domain strict: %s\r\n", Boolean.valueOf( isJavascriptDomainStrict() )));
+		sb.append(String.format("* Javascript inject attributes: %s\r\n", Boolean.valueOf( isJavascriptInjectIntoAttributes() )));
+		sb.append(String.format("* Javascript inject forms: %s\r\n", Boolean.valueOf( isJavascriptInjectIntoForms() )));
 		sb.append(String.format("* Javascript referer pattern: %s\r\n", getJavascriptRefererPattern()));
-		sb.append(String.format("* Javascript referer match domain: %s\r\n", isJavascriptRefererMatchDomain()));
+		sb.append(String.format("* Javascript referer match domain: %s\r\n", Boolean.valueOf( isJavascriptRefererMatchDomain() )));
 		sb.append(String.format("* Javascript source file: %s\r\n", getJavascriptSourceFile()));
 		sb.append(String.format("* Javascript X requested with: %s\r\n", getJavascriptXrequestedWith()));
 		sb.append(String.format("* Protected methods: %s\r\n", CsrfGuardUtils.toStringForLog(getProtectedMethods())));
-		sb.append(String.format("* Protected pages size: %s\r\n", CsrfGuardUtils.length(getProtectedPages())));
+		sb.append(String.format("* Protected pages size: %s\r\n", Integer.valueOf( CsrfGuardUtils.length(getProtectedPages()) )));
 		sb.append(String.format("* Unprotected methods: %s\r\n", CsrfGuardUtils.toStringForLog(getUnprotectedMethods())));
-		sb.append(String.format("* Unprotected pages size: %s\r\n", CsrfGuardUtils.length(getUnprotectedPages())));
-		sb.append(String.format("* TokenPerPage: %s\r\n", isTokenPerPageEnabled()));
-		sb.append(String.format("* Enabled: %s\r\n", isEnabled()));
-		sb.append(String.format("* ValidateWhenNoSessionExists: %s\r\n", isValidateWhenNoSessionExists()));
+		sb.append(String.format("* Unprotected pages size: %s\r\n", Integer.valueOf( CsrfGuardUtils.length(getUnprotectedPages()) )));
+		sb.append(String.format("* TokenPerPage: %s\r\n", Boolean.valueOf( isTokenPerPageEnabled() )));
+		sb.append(String.format("* Enabled: %s\r\n", Boolean.valueOf( isEnabled() )));
+		sb.append(String.format("* ValidateWhenNoSessionExists: %s\r\n", Boolean.valueOf( isValidateWhenNoSessionExists() )));
 		
 		for (IAction action : getActions()) {
 			sb.append(String.format("* Action: %s\r\n", action.getClass().getName()));
