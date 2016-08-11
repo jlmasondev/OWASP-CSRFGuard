@@ -101,7 +101,7 @@ public final class CsrfGuardFilter implements Filter {
 	}
 
 	@Override
-	public void init(@SuppressWarnings("hiding") FilterConfig filterConfig) throws ServletException {
+	public void init(FilterConfig filterConfig) throws ServletException {
 		this.filterConfig = filterConfig;
 	}
 

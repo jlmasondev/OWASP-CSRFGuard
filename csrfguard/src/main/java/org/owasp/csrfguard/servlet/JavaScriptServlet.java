@@ -162,7 +162,6 @@ public final class JavaScriptServlet extends HttpServlet {
 
 	private void fetchCsrfToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		HttpSession session = request.getSession(true);
-		@SuppressWarnings("unchecked")
 		CsrfGuard csrfGuard = CsrfGuard.getInstance();
 		String token_name = csrfGuard.getTokenName();
 		String token_value = (String) session.getAttribute(csrfGuard.getSessionKey());

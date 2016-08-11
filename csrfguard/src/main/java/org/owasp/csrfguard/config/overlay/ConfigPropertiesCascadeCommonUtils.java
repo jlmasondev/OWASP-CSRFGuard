@@ -98,7 +98,7 @@ import java.util.regex.Pattern;
  * @author mchyzer
  *
  */
-@SuppressWarnings({ "serial", "unchecked" })
+@SuppressWarnings({ "unchecked" })
 public class ConfigPropertiesCascadeCommonUtils  {
 
   /** override map for properties in thread local to be used in a web server or the like */
@@ -315,7 +315,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param differences set of keys (with prefix) of the diffs
    * @param prefix for the entries in the diffs (e.g. "attribute__")
    */
-  @SuppressWarnings({ "unchecked", "null" })
+  @SuppressWarnings({ "null" })
   public static <K,V> void mapDifferences(Map<K,V> first, Map<K,V> second, Set<K> differences, String prefix) {
     if (first == second) {
       return;
@@ -488,7 +488,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param theClass to make array from
    * @return the list or empty list if null
    */
-  @SuppressWarnings("unchecked")
   public static <T> T[] nonNull(T[] array, Class<?> theClass) {
     return array == null ? ((T[])Array.newInstance(theClass, 0)) : array;
   }
@@ -681,7 +680,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * need to abbreviate when back
    * @param result is where to append to
    */
-  @SuppressWarnings("unchecked")
   private static void toStringForLogHelper(Object object, int maxChars, StringBuilder result) {
     
     try {
@@ -852,7 +850,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @return the list
    *         This never returns null, only empty list
    */
-  @SuppressWarnings("unchecked")
   public static <T> List<T> batchList(Collection<T> collection, int batchSize,
       int batchIndex) {
 
@@ -1044,7 +1041,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param objects The arguments to be returned as a List
    * @return the list or null if objects is null
    */
-  @SuppressWarnings("unchecked")
   public static <T> List<T> toList(T... objects) {
     if (objects == null) {
       return null;
@@ -1309,7 +1305,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param typeCast
    *            true if we should typecast
    */
-  @SuppressWarnings("unchecked")
   public static void assignField(Field field, Object invokeOn,
       Object dataToAssign, boolean overrideSecurity, boolean typeCast) {
 
@@ -1527,7 +1522,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param annotationWithValueOverride
    *            annotation with value of override, or null if none
    */
-  @SuppressWarnings("unchecked")
   public static void assignField(Field field, Object invokeOn,
       Object dataToAssign, boolean overrideSecurity, boolean typeCast,
       Class<? extends Annotation> annotationWithValueOverride) {
@@ -1614,7 +1608,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param includeStaticFields when true, include static fields
    * @return the set of strings, or the empty Set if none
    */
-  @SuppressWarnings("unchecked")
   public static Set<String> fieldNames(Class theClass, Class fieldType,
       boolean includeStaticFields) {
     return fieldNamesHelper(theClass, theClass, fieldType, true, true,
@@ -1724,7 +1717,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    *            present, false if exclude
    * @return the set of field names or empty set if none
    */
-  @SuppressWarnings("unchecked")
   static Set<String> fieldNamesHelper(Class theClass,
       Class superclassToStopAt, Class<?> fieldType,
       boolean includeSuperclassToStopAt, boolean includeStaticFields,
@@ -1765,7 +1757,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    *            present, false if exclude
    * @return the set of fields (wont return null)
    */
-  @SuppressWarnings("unchecked")
   public static Set<Field> fields(Class theClass, Class superclassToStopAt,
       Class fieldType, boolean includeSuperclassToStopAt,
       boolean includeStaticFields, boolean includeFinalFields,
@@ -1794,7 +1785,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    *            present, false if exclude
    * @return the set of field names or empty set if none
    */
-  @SuppressWarnings("unchecked")
   public static Set<Field> fields(Class theClass, Class superclassToStopAt,
       Class<? extends Annotation> markerAnnotation,
       boolean includeAnnotation) {
@@ -1825,7 +1815,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    *            present, false if exclude
    * @return the set of fields (wont return null)
    */
-  @SuppressWarnings("unchecked")
   static Set<Field> fieldsHelper(Class theClass, Class superclassToStopAt,
       Class<?> fieldType, boolean includeSuperclassToStopAt,
       boolean includeStaticFields, boolean includeFinalFields,
@@ -1869,7 +1858,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param mapPrefix is the prefix for maps which are compared (e.g. attribute__)
    * @return the set of fields which are different.  never returns null
    */
-  @SuppressWarnings("unchecked")
   public static Set<String> compareObjectFields(Object first, Object second, 
       Set<String> fieldsToCompare, String mapPrefix) {
     
@@ -1932,7 +1920,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param fieldsToClone the desired fields from the object
    * @return the cloned object or null if input is null
    */
-  @SuppressWarnings("unchecked")
   public static <T> T clone(T object, Set<String> fieldsToClone) {
     
     //make a return object
@@ -1991,7 +1978,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param value The value to clone
    * @return the cloned value
    */
-  @SuppressWarnings("unchecked")
   public static <T> T cloneValue(T value) {
 
     Object clonedValue = value;
@@ -2211,7 +2197,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param includeAnnotation
    *            if include or exclude
    */
-  @SuppressWarnings("unchecked")
   private static void fieldsHelper(Class theClass, Class superclassToStopAt,
       Class<?> fieldType, boolean includeSuperclassToStopAt,
       boolean includeStaticFields, boolean includeFinalFields,
@@ -2349,7 +2334,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param theClass the class
    * @return the declared methods
    */
-  @SuppressWarnings("unused")
   private static Method[] retrieveDeclaredMethods(Class theClass) {
     Method[] methods = declaredMethodsCache().get(theClass);
     // get from cache if we can
@@ -2596,7 +2580,6 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param theClass type of array to return
    * @return array of type theClass[] filled with the objects from list
    */
-  @SuppressWarnings("unchecked")
   public static <T> T[] toArray(Collection collection, Class<T> theClass) {
     if (collection == null || collection.size() == 0) {
       return null;

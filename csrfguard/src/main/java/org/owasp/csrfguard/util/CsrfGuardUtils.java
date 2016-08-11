@@ -622,7 +622,6 @@ public class CsrfGuardUtils {
 	 * @param annotationWithValueOverride
 	 *            annotation with value of override, or null if none
 	 */
-	@SuppressWarnings("unchecked")
 	public static void assignField(Field field, Object invokeOn,
 			Object dataToAssign, boolean overrideSecurity, boolean typeCast,
 			Class<? extends Annotation> annotationWithValueOverride) {
