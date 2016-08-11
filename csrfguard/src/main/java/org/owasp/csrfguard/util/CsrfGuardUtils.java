@@ -748,16 +748,38 @@ public class CsrfGuardUtils {
 			return (T)value;
 		}
 
-		if (value==null) {
+		// DEVNOTE jmason|typeCast|all types|Aug 11, 2016 - if Eclipse boxing/unboxing severity == 'error' then you can't "return (T)(Object)0" 
+		//			because it identifies it as "int unboxed to Integer", and not any other primitive. With severity high, you have to handle each one.
+		if (value == null) {
 			if (convertNullToDefaultPrimitive && theClass.isPrimitive()) {
-				if ( theClass == boolean.class ) {
-					return (T)Boolean.FALSE;
+				if (theClass == byte.class) {
+					return (T) Byte.valueOf((byte) 0);
 				}
-				if ( theClass == char.class ) {
-					return (T)(Object)0;
+				if (theClass == short.class) {
+					return (T) Short.valueOf((short) 0);
 				}
-				//convert 0 to the type
-				return typeCast(0, theClass, false, false);
+				if (theClass == int.class) {
+					return (T) Integer.valueOf((int) 0);
+				}
+				if (theClass == long.class) {
+					return (T) Long.valueOf((long) 0);
+				}
+				if (theClass == float.class) {
+					return (T) Float.valueOf((float) 0);
+				}
+				if (theClass == double.class) {
+					return (T) Double.valueOf((double) 0);
+				}
+				if (theClass == boolean.class) {
+					return (T) Boolean.FALSE;
+				}
+				if (theClass == char.class) {
+					return (T) Character.valueOf((char) 0);
+				}
+				// DEVNOTE jmason|typeCast|deadcode|Aug 11, 2016 - we have handled the Java primitives above. No need to recurse.
+				//			if value != null then the conditionals below will handle it, which is what the recursion did
+				// convert 0 to the type
+				//return typeCast(0, theClass, false, false);
 			}
 			return null;
 		}

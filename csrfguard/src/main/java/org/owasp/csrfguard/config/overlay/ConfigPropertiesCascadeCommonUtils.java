@@ -4099,84 +4099,109 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @return the object of that instance converted into something else
    */
   @SuppressWarnings({ "unchecked", "cast" })
-  public static <T> T typeCast(Object value, Class<T> theClass, 
-      boolean convertNullToDefaultPrimitive, boolean useNewInstanceHooks) {
-    
-    if (Object.class.equals(theClass)) {
-      return (T)value;
-    }
-    
-    if (value==null) {
-      if (convertNullToDefaultPrimitive && theClass.isPrimitive()) {
-        if ( theClass == boolean.class ) {
-          return (T)Boolean.FALSE;
-        }
-        if ( theClass == char.class ) {
-          return (T)(Object)0;
-        }
-        //convert 0 to the type
-        return typeCast(0, theClass, false, false);
-      }
-      return null;
-    }
-  
-    if (theClass.isInstance(value)) {
-      return (T)value;
-    }
-    
-    //if array, get the base class
-    if (theClass.isArray() && theClass.getComponentType() != null) {
-      theClass = (Class<T>)theClass.getComponentType();
-    }
-    Object resultValue = null;
-    //loop through and see the primitive types etc
-    if (theClass.equals(Date.class)) {
-      resultValue = dateValue(value);
-    } else if (theClass.equals(String.class)) {
-      resultValue = stringValue(value);
-    } else if (theClass.equals(Timestamp.class)) {
-      resultValue = toTimestamp(value);
-    } else if (theClass.equals(Boolean.class) || theClass.equals(boolean.class)) {
-      resultValue = booleanObjectValue(value);
-    } else if (theClass.equals(Integer.class) || theClass.equals(int.class)) {
-      resultValue = intObjectValue(value, true);
-    } else if (theClass.equals(Double.class) || theClass.equals(double.class)) {
-      resultValue = doubleObjectValue(value, true);
-    } else if (theClass.equals(Float.class) || theClass.equals(float.class)) {
-      resultValue = floatObjectValue(value, true);
-    } else if (theClass.equals(Long.class) || theClass.equals(long.class)) {
-      resultValue = longObjectValue(value, true);
-    } else if (theClass.equals(Byte.class) || theClass.equals(byte.class)) {
-      resultValue = byteObjectValue(value);
-    } else if (theClass.equals(Character.class) || theClass.equals(char.class)) {
-      resultValue = charObjectValue(value);
-    } else if (theClass.equals(Short.class) || theClass.equals(short.class)) {
-      resultValue = shortObjectValue(value);
-    } else if ( theClass.isEnum() && (value instanceof String) ) {
-      resultValue = Enum.valueOf((Class)theClass, (String) value);
-    } else if ( theClass.equals(Class.class) && (value instanceof String) ) {
-      resultValue = forName((String)value);
-    } else if (useNewInstanceHooks && value instanceof String) {
-      String stringValue = (String)value;
-      if ( equals("null", stringValue)) {
-        resultValue = null;
-      } else if (equals("newInstance", stringValue)) {
-        resultValue = newInstance(theClass);
-      } else { // instantiate using string
-        //note, we could typecast this to fit whatever is there... right now this is used for annotation
-        try {
-          Constructor constructor = theClass.getConstructor(new Class[] {String.class} );
-          resultValue = constructor.newInstance(new Object[] {stringValue} );            
-        } catch (Exception e) {
-          throw new RuntimeException("Cant find constructor with string for class: " + theClass);
-        }
-      }
-    } else {
-      throw new RuntimeException("Cannot convert from type: " + value.getClass() + " to type: " + theClass);
-    }
-  
-    return (T)resultValue;
-  }
+	public static <T> T typeCast(Object value, Class<T> theClass,
+			boolean convertNullToDefaultPrimitive, boolean useNewInstanceHooks) {
+
+		if (Object.class.equals(theClass)) {
+			return (T) value;
+		}
+
+		// DEVNOTE jmason|typeCast|all types|Aug 11, 2016 - if Eclipse boxing/unboxing severity == 'error' then you can't "return (T)(Object)0" 
+		//			because it identifies it as "int unboxed to Integer", and not any other primitive. With severity high, you have to handle each one.
+		if (value == null) {
+			if (convertNullToDefaultPrimitive && theClass.isPrimitive()) {
+				if (theClass == byte.class) {
+					return (T) Byte.valueOf((byte) 0);
+				}
+				if (theClass == short.class) {
+					return (T) Short.valueOf((short) 0);
+				}
+				if (theClass == int.class) {
+					return (T) Integer.valueOf((int) 0);
+				}
+				if (theClass == long.class) {
+					return (T) Long.valueOf((long) 0);
+				}
+				if (theClass == float.class) {
+					return (T) Float.valueOf((float) 0);
+				}
+				if (theClass == double.class) {
+					return (T) Double.valueOf((double) 0);
+				}
+				if (theClass == boolean.class) {
+					return (T) Boolean.FALSE;
+				}
+				if (theClass == char.class) {
+					return (T) Character.valueOf((char) 0);
+				}
+				// DEVNOTE jmason|typeCast|deadcode|Aug 11, 2016 - we have handled the Java primitives above. No need to recurse.
+				//			if value != null then the conditionals below will handle it, which is what the recursion did
+				// convert 0 to the type
+				//return typeCast(0, theClass, false, false);
+			}
+			return null;
+		}
+
+		if (theClass.isInstance(value)) {
+			return (T) value;
+		}
+
+		// if array, get the base class
+		if (theClass.isArray() && theClass.getComponentType() != null) {
+			theClass = (Class<T>) theClass.getComponentType();
+		}
+		Object resultValue = null;
+		// loop through and see the primitive types etc
+		if (theClass.equals(Date.class)) {
+			resultValue = dateValue(value);
+		} else if (theClass.equals(String.class)) {
+			resultValue = stringValue(value);
+		} else if (theClass.equals(Timestamp.class)) {
+			resultValue = toTimestamp(value);
+		} else if (theClass.equals(Boolean.class) || theClass.equals(boolean.class)) {
+			resultValue = booleanObjectValue(value);
+		} else if (theClass.equals(Integer.class) || theClass.equals(int.class)) {
+			resultValue = intObjectValue(value, true);
+		} else if (theClass.equals(Double.class) || theClass.equals(double.class)) {
+			resultValue = doubleObjectValue(value, true);
+		} else if (theClass.equals(Float.class) || theClass.equals(float.class)) {
+			resultValue = floatObjectValue(value, true);
+		} else if (theClass.equals(Long.class) || theClass.equals(long.class)) {
+			resultValue = longObjectValue(value, true);
+		} else if (theClass.equals(Byte.class) || theClass.equals(byte.class)) {
+			resultValue = byteObjectValue(value);
+		} else if (theClass.equals(Character.class) || theClass.equals(char.class)) {
+			resultValue = charObjectValue(value);
+		} else if (theClass.equals(Short.class) || theClass.equals(short.class)) {
+			resultValue = shortObjectValue(value);
+		} else if (theClass.isEnum() && (value instanceof String)) {
+			resultValue = Enum.valueOf((Class) theClass, (String) value);
+		} else if (theClass.equals(Class.class) && (value instanceof String)) {
+			resultValue = forName((String) value);
+		} else if (useNewInstanceHooks && value instanceof String) {
+			String stringValue = (String) value;
+			if (equals("null", stringValue)) {
+				resultValue = null;
+			} else if (equals("newInstance", stringValue)) {
+				resultValue = newInstance(theClass);
+			} else { // instantiate using string
+				// note, we could typecast this to fit whatever is there...
+				// right now this is used for annotation
+				try {
+					Constructor constructor = theClass.getConstructor(new Class[] { String.class });
+					resultValue = constructor.newInstance(new Object[] { stringValue });
+				} catch (Exception e) {
+					throw new RuntimeException(
+							"Cant find constructor with string for class: " + theClass);
+				}
+			}
+		} else {
+			throw new RuntimeException("Cannot convert from type: "
+					+ value.getClass() + " to type: " + theClass);
+		}
+
+		return (T) resultValue;
+	}
   
   /**
    * see if a class is a scalar (not bean, not array or list, etc)
