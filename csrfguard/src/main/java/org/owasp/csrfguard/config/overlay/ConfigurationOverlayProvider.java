@@ -108,7 +108,7 @@ public class ConfigurationOverlayProvider extends ConfigPropertiesCascadeBase {
 		}
 		
 		//generally this is Owasp.CsrfGuard.properties
-		return ConfigPropertiesCascadeUtils.defaultIfBlank(CsrfGuardServletContextListener.getConfigFileName(), 
+		return ConfigPropertiesCascadeCommonUtils.defaultIfBlank(CsrfGuardServletContextListener.getConfigFileName(), 
 				mainExampleConfigClasspath);
 	}
 

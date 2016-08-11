@@ -89,7 +89,7 @@ public abstract class ConfigPropertiesCascadeBase {
 
 		ConfigPropertiesCascadeBase configPropertiesCascadeBase = configSingletonFromClass.get(configClass);
 		if (configPropertiesCascadeBase == null) {
-			configPropertiesCascadeBase = ConfigPropertiesCascadeUtils.newInstance(configClass, true);
+			configPropertiesCascadeBase = ConfigPropertiesCascadeCommonUtils.newInstance(configClass, true);
 			configSingletonFromClass.put(configClass, configPropertiesCascadeBase);
 
 		}
@@ -204,13 +204,13 @@ public abstract class ConfigPropertiesCascadeBase {
 		Map<String, String> localPropertiesOverrideMap = propertiesOverrideMap();
 
 		for (String key: localPropertiesOverrideMap.keySet()) {
-			tempResult.put(key, ConfigPropertiesCascadeUtils.defaultString(localPropertiesOverrideMap.get(key)));
+			tempResult.put(key, ConfigPropertiesCascadeCommonUtils.defaultString(localPropertiesOverrideMap.get(key)));
 		}
 
 		localPropertiesOverrideMap = propertiesThreadLocalOverrideMap();
 
 		for (String key: localPropertiesOverrideMap.keySet()) {
-			tempResult.put(key, ConfigPropertiesCascadeUtils.defaultString(localPropertiesOverrideMap.get(key)));
+			tempResult.put(key, ConfigPropertiesCascadeCommonUtils.defaultString(localPropertiesOverrideMap.get(key)));
 		}
 
 		Properties result = new Properties();
@@ -231,7 +231,7 @@ public abstract class ConfigPropertiesCascadeBase {
 				key = key.substring(0, key.length() - EL_CONFIG_SUFFIX.length());
 			}
 			//cant be null, or hashtable exception
-			result.put(key, ConfigPropertiesCascadeUtils.defaultString(value));
+			result.put(key, ConfigPropertiesCascadeCommonUtils.defaultString(value));
 		}
 
 		return result;
@@ -394,15 +394,15 @@ public abstract class ConfigPropertiesCascadeBase {
 
 			throw new RuntimeException(error);
 		}
-		value = ConfigPropertiesCascadeUtils.trim(value);
+		value = ConfigPropertiesCascadeCommonUtils.trim(value);
 		value = substituteCommonVars(value);
 
-		if (!required && ConfigPropertiesCascadeUtils.isBlank(value)) {
+		if (!required && ConfigPropertiesCascadeCommonUtils.isBlank(value)) {
 			return new PropertyValueResult(null, true);
 		}
 
 		//do the validation if this is required
-		if (required && ConfigPropertiesCascadeUtils.isBlank(value)) {
+		if (required && ConfigPropertiesCascadeCommonUtils.isBlank(value)) {
 			String error = "Property " + key + " in properties file: " + this.getMainConfigClasspath() + ", has a blank value, it is required";
 
 			throw new RuntimeException(error);
@@ -419,10 +419,10 @@ public abstract class ConfigPropertiesCascadeBase {
 	protected static String substituteCommonVars(String string) {
 		if (string != null && string.indexOf('$') < 0 ) {
 			//might have $space$
-			string = ConfigPropertiesCascadeUtils.replace(string, "$space$", " ");
+			string = ConfigPropertiesCascadeCommonUtils.replace(string, "$space$", " ");
 
 			//note, at some point we could be OS specific
-			string = ConfigPropertiesCascadeUtils.replace(string, "$newline$", "\n");
+			string = ConfigPropertiesCascadeCommonUtils.replace(string, "$newline$", "\n");
 		}
 		return string;
 	}
@@ -507,7 +507,7 @@ public abstract class ConfigPropertiesCascadeBase {
 			@Override
 			public InputStream inputStream(String configFileTypeConfig,
 					ConfigPropertiesCascadeBase configPropertiesCascadeBase) {
-				URL url = ConfigPropertiesCascadeUtils.computeUrl(configFileTypeConfig, true);
+				URL url = ConfigPropertiesCascadeCommonUtils.computeUrl(configFileTypeConfig, true);
 				Exception exception = null;
 				if (url != null) {
 					try {
@@ -520,10 +520,10 @@ public abstract class ConfigPropertiesCascadeBase {
 				//if we didnt get there yet, lets look for a companion jar
 				Class<?> classInJar = configPropertiesCascadeBase.getClassInSiblingJar();
 				if (classInJar != null) {
-					File jarFile = classInJar == null ? null : ConfigPropertiesCascadeUtils.jarFile(classInJar);
+					File jarFile = classInJar == null ? null : ConfigPropertiesCascadeCommonUtils.jarFile(classInJar);
 					File parentDir = jarFile == null ? null : jarFile.getParentFile();
 					String fileName = parentDir == null ? null 
-							: (ConfigPropertiesCascadeUtils.stripLastSlashIfExists(ConfigPropertiesCascadeUtils.fileCanonicalPath(parentDir)) + File.separator + configFileTypeConfig);
+							: (ConfigPropertiesCascadeCommonUtils.stripLastSlashIfExists(ConfigPropertiesCascadeCommonUtils.fileCanonicalPath(parentDir)) + File.separator + configFileTypeConfig);
 					File configFile = fileName == null ? null 
 							: new File(fileName);
 
@@ -556,7 +556,7 @@ public abstract class ConfigPropertiesCascadeBase {
 		 * @return the enum or null or exception if not found
 		 */
 		public static ConfigFileType valueOfIgnoreCase(String string) {
-			return ConfigPropertiesCascadeUtils.enumValueOfIgnoreCase(ConfigFileType.class,string, false );
+			return ConfigPropertiesCascadeCommonUtils.enumValueOfIgnoreCase(ConfigFileType.class,string, false );
 		}
 
 	}
@@ -609,7 +609,7 @@ public abstract class ConfigPropertiesCascadeBase {
 			InputStream inputStream = null;
 			try {
 				inputStream = this.configFileType.inputStream(this.configFileTypeConfig, configPropertiesCascadeBase);
-				return ConfigPropertiesCascadeUtils.toString(inputStream, "UTF-8");
+				return ConfigPropertiesCascadeCommonUtils.toString(inputStream, "UTF-8");
 			} catch (Exception e) {
 				throw new RuntimeException("Problem reading config: '" + this.originalConfig + "'", e);
 			} finally {
@@ -632,9 +632,9 @@ public abstract class ConfigPropertiesCascadeBase {
 			}
 
 			//lets get the type
-			String configFileTypeString = ConfigPropertiesCascadeUtils.trim(ConfigPropertiesCascadeUtils.prefixOrSuffix(configFileFullConfig, ":", true));
+			String configFileTypeString = ConfigPropertiesCascadeCommonUtils.trim(ConfigPropertiesCascadeCommonUtils.prefixOrSuffix(configFileFullConfig, ":", true));
 
-			if (ConfigPropertiesCascadeUtils.isBlank(configFileTypeString)) {
+			if (ConfigPropertiesCascadeCommonUtils.isBlank(configFileTypeString)) {
 				throw new RuntimeException("Config file spec needs the type of config and a colon, e.g. file:/some/path/config.properties  '" + configFileFullConfig + "'");
 			}
 
@@ -644,7 +644,7 @@ public abstract class ConfigPropertiesCascadeBase {
 				throw new RuntimeException("Config file spec needs the type of config and a colon, e.g. file:/some/path/config.properties  '" + configFileFullConfig + "', " + e.getMessage(), e);
 			}
 
-			this.configFileTypeConfig = ConfigPropertiesCascadeUtils.trim(ConfigPropertiesCascadeUtils.prefixOrSuffix(configFileFullConfig, ":", false));
+			this.configFileTypeConfig = ConfigPropertiesCascadeCommonUtils.trim(ConfigPropertiesCascadeCommonUtils.prefixOrSuffix(configFileFullConfig, ":", false));
 
 		}
 
@@ -705,16 +705,16 @@ public abstract class ConfigPropertiesCascadeBase {
 		}
 
 		//if couldnt find it from the override, get from example
-		if (ConfigPropertiesCascadeUtils.isBlank(overrideFullConfig) || ConfigPropertiesCascadeUtils.isBlank(secondsToCheckConfigString)) {
+		if (ConfigPropertiesCascadeCommonUtils.isBlank(overrideFullConfig) || ConfigPropertiesCascadeCommonUtils.isBlank(secondsToCheckConfigString)) {
 
 			Properties mainExampleConfigFile = propertiesFromResourceName(this.getMainExampleConfigClasspath(), false);
 
 			if (mainExampleConfigFile != null) {
 
-				if (ConfigPropertiesCascadeUtils.isBlank(overrideFullConfig)) {
+				if (ConfigPropertiesCascadeCommonUtils.isBlank(overrideFullConfig)) {
 					overrideFullConfig = mainExampleConfigFile.getProperty(this.getHierarchyConfigKey());
 				}
-				if (ConfigPropertiesCascadeUtils.isBlank(secondsToCheckConfigString)) {
+				if (ConfigPropertiesCascadeCommonUtils.isBlank(secondsToCheckConfigString)) {
 					secondsToCheckConfigString = mainExampleConfigFile.getProperty(this.getSecondsToCheckConfigKey());
 				}
 
@@ -723,24 +723,24 @@ public abstract class ConfigPropertiesCascadeBase {
 		}
 
 		//if hasnt found yet, there is a problem
-		if (ConfigPropertiesCascadeUtils.isBlank(overrideFullConfig)) {
+		if (ConfigPropertiesCascadeCommonUtils.isBlank(overrideFullConfig)) {
 			throw new RuntimeException("Cant find the hierarchy config key: " + this.getHierarchyConfigKey() 
 					+ " in config files: " + this.getMainConfigClasspath()
 					+ " or " + this.getMainExampleConfigClasspath());
 		}
 
 		//if hasnt found yet, there is a problem
-		if (ConfigPropertiesCascadeUtils.isBlank(secondsToCheckConfigString)) {
+		if (ConfigPropertiesCascadeCommonUtils.isBlank(secondsToCheckConfigString)) {
 			throw new RuntimeException("Cant find the seconds to check config key: " + this.getSecondsToCheckConfigKey() 
 					+ " in config files: " + this.getMainConfigClasspath()
 					+ " or " + this.getMainExampleConfigClasspath());
 		}
 
 		//make a new return object based on this class
-		ConfigPropertiesCascadeBase result = ConfigPropertiesCascadeUtils.newInstance(this.getClass(), true);
+		ConfigPropertiesCascadeBase result = ConfigPropertiesCascadeCommonUtils.newInstance(this.getClass(), true);
 
 		try {
-			result.timeToCheckConfigSeconds = ConfigPropertiesCascadeUtils.intObjectValue(secondsToCheckConfigString, false);
+			result.timeToCheckConfigSeconds = ConfigPropertiesCascadeCommonUtils.intObjectValue(secondsToCheckConfigString, false);
 		} catch (Exception e) {
 			throw new RuntimeException("Invalid integer seconds to check config config value: " + secondsToCheckConfigString
 					+ ", key: " + this.getSecondsToCheckConfigKey() 
@@ -751,7 +751,7 @@ public abstract class ConfigPropertiesCascadeBase {
 
 		//ok, we have the config file list...
 		//lets get this into a comma separated list
-		List<String> overrideConfigStringList = ConfigPropertiesCascadeUtils.splitTrimToList(overrideFullConfig, ",");
+		List<String> overrideConfigStringList = ConfigPropertiesCascadeCommonUtils.splitTrimToList(overrideFullConfig, ",");
 
 		result.configFiles = new ArrayList<ConfigFile>();
 
@@ -799,7 +799,7 @@ public abstract class ConfigPropertiesCascadeBase {
 	protected static void logInfo(String logMessage, Exception t) {
 		ILogger iLogger = iLogger();
 		if (iLogger != null) {
-			if (!ConfigPropertiesCascadeUtils.isBlank(logMessage)) {
+			if (!ConfigPropertiesCascadeCommonUtils.isBlank(logMessage)) {
 				iLogger.log(LogLevel.Info, logMessage);
 			}
 			if (t != null) {
@@ -816,7 +816,7 @@ public abstract class ConfigPropertiesCascadeBase {
 	protected static void logError(String logMessage, Exception t) {
 		ILogger iLogger = iLogger();
 		if (iLogger != null) {
-			if (!ConfigPropertiesCascadeUtils.isBlank(logMessage)) {
+			if (!ConfigPropertiesCascadeCommonUtils.isBlank(logMessage)) {
 				iLogger.log(LogLevel.Info, logMessage);
 			}
 			if (t != null) {
@@ -896,7 +896,7 @@ public abstract class ConfigPropertiesCascadeBase {
 		} finally {
 			ILogger iLogger = iLogger();
 			if (iLogger != null) {
-				iLogger.log(LogLevel.Debug, ConfigPropertiesCascadeUtils.mapToString(debugMap));
+				iLogger.log(LogLevel.Debug, ConfigPropertiesCascadeCommonUtils.mapToString(debugMap));
 			}
 		}
 	}
@@ -938,7 +938,7 @@ public abstract class ConfigPropertiesCascadeBase {
 		try {
 			//lets look at all the files and see if they have changed...
 			for (ConfigFile configFile : this.configFiles) {
-				if (!ConfigPropertiesCascadeUtils.equals(configFile.getContents(), configFile.retrieveContents(this))) {
+				if (!ConfigPropertiesCascadeCommonUtils.equals(configFile.getContents(), configFile.retrieveContents(this))) {
 					return true;
 				}
 			}
@@ -1030,10 +1030,10 @@ public abstract class ConfigPropertiesCascadeBase {
 	 */
 	protected Boolean propertyValueBoolean(String key, Boolean defaultValue, boolean required) {
 		String value = propertyValueString(key, null, false).getTheValue();
-		if (ConfigPropertiesCascadeUtils.isBlank(value) && !required) {
+		if (ConfigPropertiesCascadeCommonUtils.isBlank(value) && !required) {
 			return defaultValue;
 		}
-		if (ConfigPropertiesCascadeUtils.isBlank(value) && required) {
+		if (ConfigPropertiesCascadeCommonUtils.isBlank(value) && required) {
 			throw new RuntimeException("Cant find boolean property " + key + " in properties file: " + this.getMainConfigClasspath() + ", it is required, expecting true or false");
 		}
 		
@@ -1075,14 +1075,14 @@ public abstract class ConfigPropertiesCascadeBase {
 	 */
 	protected Integer propertyValueInt(String key, Integer defaultValue, boolean required) {
 		String value = propertyValueString(key, null, false).getTheValue();
-		if (ConfigPropertiesCascadeUtils.isBlank(value) && !required) {
+		if (ConfigPropertiesCascadeCommonUtils.isBlank(value) && !required) {
 			return defaultValue;
 		}
-		if (ConfigPropertiesCascadeUtils.isBlank(value) && required) {
+		if (ConfigPropertiesCascadeCommonUtils.isBlank(value) && required) {
 			throw new RuntimeException("Cant find integer property " + key + " in config file: " + this.getMainConfigClasspath() + ", it is required");
 		}
 		try {
-			return ConfigPropertiesCascadeUtils.intObjectValue(value, false);
+			return ConfigPropertiesCascadeCommonUtils.intObjectValue(value, false);
 		} catch (Exception e) {
 
 		}
@@ -1137,7 +1137,7 @@ public abstract class ConfigPropertiesCascadeBase {
 
 		try {
 
-			url = ConfigPropertiesCascadeUtils.computeUrl(resourceName, true);
+			url = ConfigPropertiesCascadeCommonUtils.computeUrl(resourceName, true);
 
 		} catch (Exception e) {
 
@@ -1175,7 +1175,7 @@ public abstract class ConfigPropertiesCascadeBase {
 	 */
 	public boolean assertPropertyValueRequired(String key) {
 		String value = propertyValueString(key);
-		if (!ConfigPropertiesCascadeUtils.isBlank(value)) {
+		if (!ConfigPropertiesCascadeCommonUtils.isBlank(value)) {
 			return true;
 		}
 		String error = "Cant find property " + key + " in resource: " + this.getMainConfigClasspath() + ", it is required";
@@ -1201,11 +1201,11 @@ public abstract class ConfigPropertiesCascadeBase {
 
 		String value = propertyValueString(key);
 		//maybe ok not there
-		if (!required && ConfigPropertiesCascadeUtils.isBlank(value)) {
+		if (!required && ConfigPropertiesCascadeCommonUtils.isBlank(value)) {
 			return true;
 		}
 		try {
-			ConfigPropertiesCascadeUtils.booleanValue(value);
+			ConfigPropertiesCascadeCommonUtils.booleanValue(value);
 			return true;
 		} catch (Exception e) {
 
@@ -1235,7 +1235,7 @@ public abstract class ConfigPropertiesCascadeBase {
 		String value = propertyValueString(key);
 
 		//maybe ok not there
-		if (!required && ConfigPropertiesCascadeUtils.isBlank(value)) {
+		if (!required && ConfigPropertiesCascadeCommonUtils.isBlank(value)) {
 			return true;
 		}
 
@@ -1243,14 +1243,14 @@ public abstract class ConfigPropertiesCascadeBase {
 		try {
 
 
-			Class<?> theClass = ConfigPropertiesCascadeUtils.forName(value);
+			Class<?> theClass = ConfigPropertiesCascadeCommonUtils.forName(value);
 			if (classType.isAssignableFrom(theClass)) {
 				return true;
 			}
 			extraError = " does not derive from class: " + classType.getSimpleName();
 
 		} catch (Exception e) {
-			extraError = ", " + ConfigPropertiesCascadeUtils.getFullStackTrace(e);
+			extraError = ", " + ConfigPropertiesCascadeCommonUtils.getFullStackTrace(e);
 		}
 		String error = "Cant process property " + key + " in resource: " + this.getMainConfigClasspath() + ", the current" +
 				" value is '" + value + "', which should be of type: " 
