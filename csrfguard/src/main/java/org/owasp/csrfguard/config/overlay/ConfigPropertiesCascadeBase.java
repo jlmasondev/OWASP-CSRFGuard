@@ -374,13 +374,21 @@ public abstract class ConfigPropertiesCascadeBase {
 		Map<String, String> overrideMap = propertiesThreadLocalOverrideMap();
 
 		hasKey = overrideMap == null ? false : overrideMap.containsKey(key);
-		String value = hasKey ? overrideMap.get(key) : null;
+		String value = null;
+		if (null != overrideMap && hasKey) {
+			value = overrideMap.get(key);
+		}
 		if (!hasKey) {
-
 			overrideMap = propertiesOverrideMap();
 
-			hasKey = overrideMap == null ? false : overrideMap.containsKey(key);
-			value = hasKey ? overrideMap.get(key) : null;
+			// value already null
+			// hasKey already equals false
+			if (null != overrideMap) {
+				hasKey = overrideMap.containsKey(key);
+				if (hasKey) {
+					value = overrideMap.get(key);
+				}
+			}
 		}
 		if (!hasKey) {
 			hasKey = this.properties.containsKey(key);
@@ -520,7 +528,7 @@ public abstract class ConfigPropertiesCascadeBase {
 				//if we didnt get there yet, lets look for a companion jar
 				Class<?> classInJar = configPropertiesCascadeBase.getClassInSiblingJar();
 				if (classInJar != null) {
-					File jarFile = classInJar == null ? null : ConfigPropertiesCascadeCommonUtils.jarFile(classInJar);
+					File jarFile = ConfigPropertiesCascadeCommonUtils.jarFile(classInJar);
 					File parentDir = jarFile == null ? null : jarFile.getParentFile();
 					String fileName = parentDir == null ? null 
 							: (ConfigPropertiesCascadeCommonUtils.stripLastSlashIfExists(ConfigPropertiesCascadeCommonUtils.fileCanonicalPath(parentDir)) + File.separator + configFileTypeConfig);

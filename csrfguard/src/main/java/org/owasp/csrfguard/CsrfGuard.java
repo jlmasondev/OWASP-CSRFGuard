@@ -80,11 +80,7 @@ public final class CsrfGuard {
 		if (configurationProvider == null) {
 
 			synchronized (CsrfGuard.class) {
-				
-				if (configurationProvider == null) {
-					
-					configurationProvider = retrieveNewConfig();
-				}
+				configurationProvider = retrieveNewConfig();
 				
 			}
 		} else if ( !configurationProvider.isCacheable()) {

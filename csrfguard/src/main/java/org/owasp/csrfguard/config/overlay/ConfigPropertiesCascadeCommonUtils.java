@@ -315,7 +315,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
    * @param differences set of keys (with prefix) of the diffs
    * @param prefix for the entries in the diffs (e.g. "attribute__")
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "null" })
   public static <K,V> void mapDifferences(Map<K,V> first, Map<K,V> second, Set<K> differences, String prefix) {
     if (first == second) {
       return;
@@ -337,6 +337,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
       return;
     }
    
+    // first and second may be empty but not null. Added suppress warnings - null
     for (K key : first.keySet()) {
 
       if (second.containsKey(key)) {
@@ -723,7 +724,7 @@ public class ConfigPropertiesCascadeCommonUtils  {
         result.append(object.toString());
       }
     } catch (Exception e) {
-      result.append("<<exception>> ").append(object.getClass()).append(":\n")
+      result.append("<<exception>> ").append(null != object ? object.getClass() : "").append(":\n")
         .append(getFullStackTrace(e)).append("\n");
     }
   }

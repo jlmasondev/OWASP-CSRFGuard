@@ -41,7 +41,6 @@ public class ConfigurationAutodetectProviderFactory implements
 		
 		if (configurationProvider == null) {
 			synchronized (ConfigurationAutodetectProviderFactory.class) {
-				if (configurationProvider == null) {
 					
 					Class<? extends ConfigurationProviderFactory> factoryClass = null;
 					
@@ -73,7 +72,6 @@ public class ConfigurationAutodetectProviderFactory implements
 					configurationProvider = factory.retrieveConfiguration(defaultProperties);
 					configurationProviderCache.put(Boolean.TRUE, configurationProvider);
 					
-				}
 			}
 		}
 		

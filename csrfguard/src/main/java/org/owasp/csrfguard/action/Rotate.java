@@ -75,20 +75,23 @@ public class Rotate extends AbstractAction {
 		Map<String, String> pageTokens = (Map<String, String>) session.getAttribute(CsrfGuard.PAGE_TOKENS_KEY);
 		List<String> pages = new ArrayList<String>();
 
-		if(pageTokens != null) {
+		if (pageTokens != null) {
 			pages.addAll(pageTokens.keySet());
-		}
 
-		for (String page : pages) {
-			String token;
+			for (String page : pages) {
+				String token;
 
-			try {
-				token = RandomGenerator.generateRandomId(csrfGuard.getPrng(), csrfGuard.getTokenLength());
-			} catch (Exception e) {
-				throw new CsrfGuardException(String.format("unable to generate the random token - %s", e.getLocalizedMessage()), e);
+				try {
+					token = RandomGenerator.generateRandomId(
+							csrfGuard.getPrng(), csrfGuard.getTokenLength());
+				} catch (Exception e) {
+					throw new CsrfGuardException(String.format(
+							"unable to generate the random token - %s",
+							e.getLocalizedMessage()), e);
+				}
+
+				pageTokens.put(page, token);
 			}
-			
-			pageTokens.put(page, token);
 		}
 	}
 	

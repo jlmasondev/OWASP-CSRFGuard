@@ -403,7 +403,7 @@ public class CsrfGuardUtils {
 					.getClass());
 		}
 		// make an array of the type of object passed in, size one
-		Object array = Array.newInstance(objectOrArrayOrCollection.getClass(),
+		Object array = Array.newInstance(null != objectOrArrayOrCollection ? objectOrArrayOrCollection.getClass() : Object.class.getClass(),
 				1);
 		Array.set(array, 0, objectOrArrayOrCollection);
 		return array;
@@ -794,7 +794,7 @@ public class CsrfGuardUtils {
 		}
 		Object resultValue = null;
 		if (theClass.equals(String.class)) {
-			resultValue = value == null ? null : value.toString();
+			resultValue = value.toString();
 		} else if (theClass.equals(value.getClass())) {
 			resultValue = value;
 		} else {
@@ -1019,7 +1019,7 @@ public class CsrfGuardUtils {
 	      result.append(object.toString());
 	    }
 	  } catch (Exception e) {
-	    result.append("<<exception>> ").append(object.getClass()).append(":\n")
+	    result.append("<<exception>> ").append(null != object ? object.getClass() : "").append(":\n")
 	      .append(getFullStackTrace(e)).append("\n");
 	  }
 	}
