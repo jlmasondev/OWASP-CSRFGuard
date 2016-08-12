@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,11 +89,15 @@ public final class JavaScriptServlet extends HttpServlet {
 	}
 	
 	@Override
-	public void init(ServletConfig theServletConfig) {
-	  servletConfig = theServletConfig;
-	  //print again since it might change based on servlet config of javascript servlet
-	  CsrfGuardServletContextListener.printConfigIfConfigured(servletConfig.getServletContext(), 
-			  "Printing properties after Javascript servlet, note, the javascript properties have now been initialized: ");
+	public void init(ServletConfig theServletConfig) throws ServletException {
+		super.init(theServletConfig);
+		servletConfig = theServletConfig;
+		// print again since it might change based on servlet config of
+		// javascript servlet
+		CsrfGuardServletContextListener
+				.printConfigIfConfigured(
+						servletConfig.getServletContext(),
+						"Printing properties after Javascript servlet, note, the javascript properties have now been initialized: ");
 	}
 
 	@Override
