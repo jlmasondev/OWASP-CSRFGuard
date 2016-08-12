@@ -217,6 +217,16 @@ public class CsrfGuardUtils {
 
 	}
 
+	/**
+	 * Be aware this method will read the param line trailing whitespace and all.
+	 * So if you then do a Boolean.parseBoolean("true ") your result == false.
+	 * If you want trim built in use getInitParameterWithTrim()
+	 * @param servletConfig
+	 * @param name
+	 * @param configFileDefaultParamValue
+	 * @param defaultValue
+	 * @return param string NOT trimmed for trailing whitespace
+	 */
 	public static String getInitParameter(ServletConfig servletConfig, String name, 
 			String configFileDefaultParamValue, String defaultValue) {
 		String value = servletConfig.getInitParameter(name);
@@ -230,6 +240,20 @@ public class CsrfGuardUtils {
 		}
 
 		return value;
+	}
+	
+	/**
+	 * getInitParameter() will return the param, trailing whitespace and all.
+	 * So if you then do a Boolean.parseBoolean("true ") your result == false.
+	 * This variant with trim will trim the param string & result in the expected evaluation.
+	 * @param servletConfig
+	 * @param name
+	 * @param configFileDefaultParamValue
+	 * @param defaultValue
+	 * @return param string that has been trimmed for trailing whitespace
+	 */
+	public static String getInitParameterWithTrim(ServletConfig servletConfig, String name, String configFileDefaultParamValue, String defaultValue) {
+		return getInitParameter(servletConfig, name, configFileDefaultParamValue, defaultValue).trim();
 	}
 
 	public static String readResourceFileContent(String resourceName, boolean errorIfNotFound) {

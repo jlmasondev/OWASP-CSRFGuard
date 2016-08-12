@@ -246,24 +246,24 @@ public class PropertiesConfigurationProvider implements ConfigurationProvider {
 				
 				this.javascriptCacheControl = CsrfGuardUtils.getInitParameter(servletConfig, "cache-control",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.cacheControl"), "private, maxage=28800");
-				this.javascriptDomainStrict = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "domain-strict",  
+				this.javascriptDomainStrict = Boolean.parseBoolean(CsrfGuardUtils.getInitParameterWithTrim(servletConfig, "domain-strict",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.domainStrict"), "true"));
-				this.javascriptInjectIntoAttributes = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "inject-into-attributes",  
+				this.javascriptInjectIntoAttributes = Boolean.parseBoolean(CsrfGuardUtils.getInitParameterWithTrim(servletConfig, "inject-into-attributes",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.injectIntoAttributes"), "true"));
 
-				this.javascriptInjectGetForms = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "inject-get-forms",  
+				this.javascriptInjectGetForms = Boolean.parseBoolean(CsrfGuardUtils.getInitParameterWithTrim(servletConfig, "inject-get-forms",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.injectGetForms"), "true"));
 
-				this.javascriptInjectFormAttributes = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "inject-form-attributes",  
+				this.javascriptInjectFormAttributes = Boolean.parseBoolean(CsrfGuardUtils.getInitParameterWithTrim(servletConfig, "inject-form-attributes",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.injectFormAttributes"), "true"));
 
-				this.javascriptInjectIntoForms = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "inject-into-forms",  
+				this.javascriptInjectIntoForms = Boolean.parseBoolean(CsrfGuardUtils.getInitParameterWithTrim(servletConfig, "inject-into-forms",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.injectIntoForms"), "true"));
 				
 				this.javascriptRefererPattern = Pattern.compile(CsrfGuardUtils.getInitParameter(servletConfig, "referer-pattern",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.refererPattern"), ".*"));
 
-				this.javascriptRefererMatchDomain = Boolean.parseBoolean(CsrfGuardUtils.getInitParameter(servletConfig, "referer-match-domain",  
+				this.javascriptRefererMatchDomain = Boolean.parseBoolean(CsrfGuardUtils.getInitParameterWithTrim(servletConfig, "referer-match-domain",  
 						propertyString(this.propertiesCache, "org.owasp.csrfguard.JavascriptServlet.refererMatchDomain"), "true"));
 
 
